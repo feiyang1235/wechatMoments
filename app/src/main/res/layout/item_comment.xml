@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="50dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            tools:src="@mipmap/ic_launcher"/>
+        <TextView
+            android:includeFontPadding="false"
+            android:id="@+id/tv_comment_nick_name"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            tools:text="二毛"/>
+        <TextView
+            android:includeFontPadding="false"
+            android:id="@+id/tv_comment_content"
+            android:layout_width="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginStart="10dp"
+            android:layout_height="wrap_content"
+            tools:text="二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛二毛"/>
+    </LinearLayout>
+</layout>
