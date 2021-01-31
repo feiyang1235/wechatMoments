@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.person.ermao.thoughtworkshomework.App
-import com.person.ermao.thoughtworkshomework.bean.ProfileBean
-import com.person.ermao.thoughtworkshomework.bean.Tweet
+import com.person.ermao.thoughtworkshomework.bean.*
 import com.person.ermao.thoughtworkshomework.model.TweetModel
 
 class TweetViewModel : ViewModel() {
@@ -48,14 +47,41 @@ class TweetViewModel : ViewModel() {
 
         }
 
-    fun loadCacheTweetList():List<Tweet> {
+    fun loadCacheTweetList(): List<BaseItem> {
         pageNum++
         val startIndex = pageNum * pageSize
         val endIndex = (pageNum + 1) * pageSize - 1
-        //[startIndex,endIndex)左闭右开
-        val resultList = mutableListOf<Tweet>()
+        //[startIndex,endIndex]双闭区间
+        if (startIndex >= cacheTweetList.size) {
+            Toast.makeText(App.getApp(), "到底部啦！！", Toast.LENGTH_SHORT).show()
+            return mutableListOf()
+        }
+        val originList = mutableListOf<Tweet>()
         for (index in startIndex..endIndex) {
-            resultList.add(cacheTweetList[index])
+            if (index >= cacheTweetList.size) {
+                break
+            }
+            originList.add(cacheTweetList[index])
+        }
+        return machiningData(originList)
+    }
+
+    private fun machiningData(originList: MutableList<Tweet>): List<BaseItem> {
+        val resultList = mutableListOf<BaseItem>()
+        originList.forEach {
+            resultList.add(TweetItemBean().apply {
+                nickName = it.sender?.nick
+                avatar = it.sender?.avatar
+                content = it.content
+                imageList = it.images?.map { image -> image.url }
+            })
+            it.comments?.forEach { comment ->
+                resultList.add(CommentItemBean().apply {
+                    nickName = comment.sender?.nick
+                    avatar = comment.sender?.avatar
+                    content = comment.content
+                })
+            }
         }
         return resultList
     }

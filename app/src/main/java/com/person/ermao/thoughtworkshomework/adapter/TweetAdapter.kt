@@ -1,16 +1,21 @@
 package com.person.ermao.thoughtworkshomework.adapter
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.person.ermao.thoughtworkshomework.bean.*
 import com.person.ermao.thoughtworkshomework.databinding.ItemCommentBinding
 import com.person.ermao.thoughtworkshomework.databinding.ItemTweetBinding
+import com.person.ermao.thoughtworkshomework.loadImage
 
 class TweetAdapter(private val context: Context, private val itemList: List<BaseItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+    private var lastVisibleItem: Int = 0
+    private val uiHandler: Handler = Handler(Looper.getMainLooper())
 
     inner class TweetItemViewHolder(private val binding: ItemTweetBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -55,23 +60,49 @@ class TweetAdapter(private val context: Context, private val itemList: List<Base
         val baseItem = itemList[position]
         if (holder is TweetItemViewHolder) {
             if (baseItem is TweetItemBean) {
-                renderTweetUI(baseItem)
+                renderTweetUI(holder, baseItem)
             }
-        } else {
+        } else if (holder is CommentItemViewHolder) {
             if (baseItem is CommentItemBean) {
-                renderCommentUI(baseItem)
+                renderCommentUI(holder, baseItem)
             }
         }
     }
 
-    private fun renderCommentUI(commentItemBean: CommentItemBean) {
-
+    private fun renderCommentUI(holder: CommentItemViewHolder, commentItemBean: CommentItemBean) {
+        holder.getBinding().ivAvatar.loadImage(context, commentItemBean.avatar ?: "", false)
+        holder.getBinding().tvCommentNickName.text = commentItemBean.nickName
+        holder.getBinding().tvCommentContent.text = commentItemBean.content
     }
 
-    private fun renderTweetUI(tweetItemBean: TweetItemBean) {
-
+    private fun renderTweetUI(holder: TweetItemViewHolder, tweetItemBean: TweetItemBean) {
+        holder.getBinding().tvNickName.text = tweetItemBean.nickName
+        holder.getBinding().ivHeader.loadImage(context, tweetItemBean.avatar ?: "", false)
+        holder.getBinding().tvContent.text = tweetItemBean.content
+        val photoAdapter = PhotoGridAdapter(context, tweetItemBean.imageList)
+        holder.getBinding().gvImage.adapter = photoAdapter
     }
 
     override fun getItemCount(): Int = itemList.size
+    private var _loadDataFun: (() -> Unit)? = null
+    fun addRecyclerViewListener(loadDataFun: () -> Unit, recyclerView: RecyclerView) {
+        _loadDataFun = loadDataFun
+        // 实现上拉加载重要步骤，设置滑动监听器，RecyclerView自带的ScrollListener
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (lastVisibleItem + 1 == itemCount) {
+                        uiHandler.postDelayed({ loadDataFun() }, 500)
+                    }
+                }
+            }
 
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                lastVisibleItem =
+                    (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition();
+            }
+        })
+    }
 }

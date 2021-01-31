@@ -1,6 +1,7 @@
 package com.person.ermao.thoughtworkshomework
 
 import android.app.Activity
+import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
 import android.widget.ImageView
@@ -8,16 +9,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 //place和error 大小
-fun loadImage(activity: Activity, imageUrl: String, imageView: ImageView, placeLarge: Boolean) {
+fun ImageView.loadImage(context: Context, imageUrl: String, placeLarge: Boolean) {
     if (placeLarge) {
-        Glide.with(activity)
+        Glide.with(context)
             .load(imageUrl)
-            .apply(getPlaceErrorCenter()).into(imageView)
+            .apply(getPlaceErrorCenter()).into(this)
     } else {
-        Glide.with(activity)
+        Glide.with(context)
             .load(imageUrl)
             .apply(getPlaceErrorCenterSmall())
-            .into(imageView)
+            .into(this)
     }
 }
 
