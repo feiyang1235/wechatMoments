@@ -8,7 +8,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-//place和error 大小
+//Glide加载图片
 fun ImageView.loadImage(context: Context, imageUrl: String, placeLarge: Boolean) {
     if (placeLarge) {
         Glide.with(context)

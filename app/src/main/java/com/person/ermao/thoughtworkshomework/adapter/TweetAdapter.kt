@@ -69,12 +69,14 @@ class TweetAdapter(private val context: Context, private val itemList: List<Base
         }
     }
 
+    //渲染评论视图
     private fun renderCommentUI(holder: CommentItemViewHolder, commentItemBean: CommentItemBean) {
         holder.getBinding().ivAvatar.loadImage(context, commentItemBean.avatar ?: "", false)
         holder.getBinding().tvCommentNickName.text = commentItemBean.nickName
         holder.getBinding().tvCommentContent.text = commentItemBean.content
     }
 
+    //渲染推文视图
     private fun renderTweetUI(holder: TweetItemViewHolder, tweetItemBean: TweetItemBean) {
         holder.getBinding().tvNickName.text = tweetItemBean.nickName
         holder.getBinding().ivHeader.loadImage(context, tweetItemBean.avatar ?: "", false)

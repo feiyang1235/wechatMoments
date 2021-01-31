@@ -9,14 +9,16 @@ import com.person.ermao.thoughtworkshomework.bean.*
 import com.person.ermao.thoughtworkshomework.model.TweetModel
 
 class TweetViewModel : ViewModel() {
-    private val model by lazy {
-        TweetModel()
-    }
     private val profileLiveData = MutableLiveData<ProfileBean>()
     private val tweetLiveData = MutableLiveData<List<Tweet?>>()
     var cacheTweetList = mutableListOf<Tweet>()
     private var pageNum: Int = -1 //还没请求，默认为-1
     private val pageSize: Int = 5
+    private val model by lazy {
+        TweetModel()
+    }
+
+    //加载简介信息
     fun loadProfileInfo() =
         liveData {
             try {
@@ -32,6 +34,7 @@ class TweetViewModel : ViewModel() {
 
         }
 
+    //加载原始的推文列表信息
     fun loadTweetListInfo() =
         liveData {
             try {
@@ -47,12 +50,14 @@ class TweetViewModel : ViewModel() {
 
         }
 
+    //加载内存缓存的推文列表信息
     fun loadCacheTweetList(): List<BaseItem> {
         pageNum++
         val startIndex = pageNum * pageSize
         val endIndex = (pageNum + 1) * pageSize - 1
         //[startIndex,endIndex]双闭区间
         if (startIndex >= cacheTweetList.size) {
+
             Toast.makeText(App.getApp(), "到底部啦！！", Toast.LENGTH_SHORT).show()
             return mutableListOf()
         }
@@ -66,6 +71,7 @@ class TweetViewModel : ViewModel() {
         return machiningData(originList)
     }
 
+    //原始推文列表信息转换成列表可使用的列表信息
     private fun machiningData(originList: MutableList<Tweet>): List<BaseItem> {
         val resultList = mutableListOf<BaseItem>()
         originList.forEach {

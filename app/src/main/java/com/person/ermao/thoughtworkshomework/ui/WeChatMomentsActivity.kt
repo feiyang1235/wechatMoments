@@ -28,6 +28,7 @@ class WeChatMomentsActivity : AppCompatActivity() {
         adapter = TweetAdapter(this, tweetList)
         binding.rvTweetList.adapter = adapter
         binding.rvTweetList.layoutManager = LinearLayoutManager(this)
+        //设置列表上拉加载监听
         adapter.addRecyclerViewListener({
             val cacheList = viewModel.loadCacheTweetList()
             if (cacheList.isNullOrEmpty()) {
@@ -36,7 +37,9 @@ class WeChatMomentsActivity : AppCompatActivity() {
             tweetList.addAll(cacheList)
             adapter.notifyDataSetChanged()
         }, binding.rvTweetList)
-        viewModel.loadProfileInfo().observe(this, Observer {
+        //加载并监听简介信息
+        viewModel.loadProfileInfo().observe(this, {
+            //渲染简介信息
             binding.ivProfileImage.loadImage(
                 this@WeChatMomentsActivity,
                 it.profileImage ?: "",
@@ -49,10 +52,13 @@ class WeChatMomentsActivity : AppCompatActivity() {
             )
             binding.tvNickName.text = it.nick
         })
-        viewModel.loadTweetListInfo().observe(this, Observer {
+        //加载并监听推文列表信息
+        viewModel.loadTweetListInfo().observe(this, {
+            //加载的数据存入内存缓存中
             viewModel.cacheTweetList.addAll(it.filterNotNull().filter { tweet ->
                 !tweet.images.isNullOrEmpty() || tweet.content != null
             })
+            //加载第一页内存缓存数据
             val loadCacheTweetList = viewModel.loadCacheTweetList()
             tweetList.addAll(loadCacheTweetList)
             adapter.notifyDataSetChanged()

@@ -9,6 +9,9 @@ import android.widget.ImageView
 import com.person.ermao.thoughtworkshomework.R
 import com.person.ermao.thoughtworkshomework.loadImage
 
+/**
+ * 加载九宫格图片的adapter
+ * */
 class PhotoGridAdapter(private val context: Context, private var photoUrlList: List<String?>?) :
     BaseAdapter() {
     override fun getCount(): Int = photoUrlList?.size ?: 0
